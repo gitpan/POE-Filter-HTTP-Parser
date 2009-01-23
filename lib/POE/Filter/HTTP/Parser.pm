@@ -3,16 +3,24 @@ package POE::Filter::HTTP::Parser;
 use strict;
 use warnings;
 use HTTP::Parser;
-use HTTP::Status qw(status_message);
+use HTTP::Status qw(status_message RC_BAD_REQUEST RC_OK RC_LENGTH_REQUIRED);
 use base 'POE::Filter';
 use vars qw($VERSION);
 
-$VERSION = '0.02';
+$VERSION = '0.04';
+
+my %type_map = (
+   'server', 'request',
+   'client', 'response',
+);
 
 sub new {
   my $class = shift;
   my %opts = @_;
   $opts{lc $_} = delete $opts{$_} for keys %opts;
+  if ( $opts{type} and defined $type_map{ $opts{type} } ) {
+	$opts{type} = $type_map{ $opts{type} };
+  }
   $opts{type} = 'response' unless $opts{type} and $opts{type} =~ /^(request|response)$/;
   my $self = \%opts;
   $self->{BUFFER} = [];
@@ -33,6 +41,11 @@ sub get_one {
 
   my $status;
   eval { $status = $self->{parser}->add( $string ); };
+
+  if ( $@ and $self->{type} eq 'request' ) {
+    # Build a HTTP::Response error message
+    return [ $self->_build_error( RC_BAD_REQUEST, "<p><pre>$@</pre></p>" ) ];
+  }
 
   if ( $@ and $self->{debug} ) {
      warn "$@\n";
@@ -57,8 +70,14 @@ sub _old_put {
 
 sub put {
   my $self = shift;
-  $self->_put_response( @_ ) if $self->{type} eq 'request';
-  $self->_put_request( @_ );
+  my $return;
+  if ( $self->{type} eq 'request' ) {
+     $return = $self->_put_response( @_ );
+  }
+  else {
+     $return = $self->_put_request( @_ );
+  }
+  $return;
 }
 
 sub _put_response {
@@ -137,29 +156,88 @@ sub get_pending {
   return [ ( $data ? $data : () ), @$self->{BUFFER} ];
 }
 
+sub _build_basic_response {
+  my ($self, $content, $content_type, $status) = @_;
+
+  # Need to check lengths in octets, not characters.
+  BEGIN { eval { require bytes } and bytes->import; }
+
+  $content_type ||= 'text/html';
+  $status       ||= RC_OK;
+
+  my $response = HTTP::Response->new($status);
+
+  $response->push_header( 'Content-Type', $content_type );
+  $response->push_header( 'Content-Length', length($content) );
+  $response->content($content);
+
+  return $response;
+}
+
+sub _build_error {
+  my($self, $status, $details) = @_;
+
+  $status  ||= RC_BAD_REQUEST;
+  $details ||= '';
+  my $message = status_message($status) || "Unknown Error";
+
+  return $self->_build_basic_response(
+    ( "<html>" .
+      "<head>" .
+      "<title>Error $status: $message</title>" .
+      "</head>" .
+      "<body>" .
+      "<h1>Error $status: $message</h1>" .
+      "<p>$details</p>" .
+      "</body>" .
+      "</html>"
+    ),
+    "text/html",
+    $status
+  );
+}
+
 'I filter therefore I am';
 __END__
 
 =head1 NAME
 
-POE::Filter::HTTP::Parser - A POE filter for HTTP based on HTTP::Parser 
+POE::Filter::HTTP::Parser - A HTTP POE filter for HTTP clients or servers
 
 =head1 SYNOPSIS
 
     use POE::Filter::HTTP::Parser;
 
-    my $request_filter = POE::Filter::HTTP::Parser->new( type => 'request' );
+    # For HTTP Servers
+
+    my $request_filter = POE::Filter::HTTP::Parser->new( type => 'server' );
     my $arrayref_of_request_objects = $filter->get( [ $stream ] );
 
-    my $response_filter = POE::Filter::HTTP::Parser->new( type => 'response' );
+    my $arrayref_of_HTTP_stream = $filter->put( $arrayref_of_response_objects );
+
+    # For HTTP clients
+
+    my $response_filter = POE::Filter::HTTP::Parser->new( type => 'client' );
+    my $arrayref_of_HTTP_stream = $filter->put( $arrayref_of_request_objects );
+
     my $arrayref_of_response_objects = $filter->get( [ $stream ] );
+
 
 =head1 DESCRIPTION
 
 POE::Filter::HTTP::Parser is a L<POE::Filter> for HTTP which is based on L<HTTP::Parser>.
 
-It will produce L<HTTP::Request> or L<HTTP::Response> objects from a stream of HTTP text, 
-depending on the C<type> that is specified during construction of the filter object.
+It can be used to easily create L<POE> based HTTP servers or clients.
+
+With the C<type> set to C<client>, which is the default behaviour, C<get> will parse
+L<HTTP::Response> objects from HTTP streams and C<put> will accept L<HTTP::Request>
+objects and convert them to HTTP streams.
+
+With the C<type> set to C<server>, the reverse will happen. C<get> will parse L<HTTP::Request>
+objects from HTTP streams and C<put> will accept L<HTTP::Response> objects and convert them to
+HTTP streams. Like L<POE::Filter::HTTPD> if there is an error parsing the HTTP request, this
+filter will generate a L<HTTP::Response> object instead, to encapsulate the error message, 
+suitable for simply sending back to the requesting client.
 
 =head1 CONSTRUCTOR
 
@@ -167,11 +245,11 @@ depending on the C<type> that is specified during construction of the filter obj
 
 =item C<new>
 
-Creates a new POE::Filter::HTTP::Parser object. Takes one optional argument, whether to produce
-L<HTTP::Request> objects, C<request>, or L<HTTP::Reponse> objects, C<response>. C<response> is
-the default behaviour if C<type> is not specified.
+Creates a new POE::Filter::HTTP::Parser object. Takes one optional argument, C<type> which
+determines whether the filter will act in C<client> or C<server> mode. C<client> is the default
+if C<type> is not specified.
 
-  'type', set to either 'request' or 'response', default is 'response';
+  'type', set to either 'client' or 'server', default is 'client';
 
 =back
 
@@ -185,7 +263,7 @@ the default behaviour if C<type> is not specified.
 
 =item C<get_one>
 
-Takes an arrayref which is contains lines of text. Returns an arrayref of either 
+Takes an arrayref which contains lines of text. Returns an arrayref of either 
 L<HTTP::Request> or L<HTTP::Response> objects depending on the C<type> that has been
 specified.
 
@@ -216,7 +294,8 @@ Makes a copy of the filter, and clears the copy's buffer.
 
 Chris C<BinGOs> Williams
 
-The C<put> method for HTTP responses was borrowed from L<POE::Filter::HTTPD>
+The C<put> method for HTTP responses was borrowed from L<POE::Filter::HTTPD>,
+along with the code to generate L<HTTP::Response> on a parse error,
 by Artur Bergman and Rocco Caputo.
 
 =head1 LICENSE

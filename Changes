@@ -1,6 +1,13 @@
 Changelog for POE::Filter::HTTP::Parser
 =======================================
 
+0.04	Fri Jan 23 12:18:06 GMT 2009
+	- Improved the documentation
+	- Clarified type to 'server' or 'client'
+	- Generate a HTTP::Response error on bad request in 'server' mode.
+	  much like POE::Filter::HTTPD does.
+	- Additional tests, added Test::POE::(Client|Server)::TCP as 
+	  build_requires
+
 0.02	Thu Jan 22 16:29:49 GMT 2009
 	- Initial CPAN Release
-

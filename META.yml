@@ -1,9 +1,11 @@
 ---
-abstract: 'A POE filter for HTTP based on HTTP::Parser '
+abstract: 'A HTTP POE filter for HTTP clients or servers'
 author:
   - 'Chris Williams <chris@bingosnet.co.uk>'
 build_requires:
   Test::More: 0.47
+  Test::POE::Client::TCP: 0.1
+  Test::POE::Server::TCP: 0.16
 distribution_type: module
 generated_by: 'Module::Install version 0.77'
 license: perl
@@ -18,9 +20,11 @@ no_index:
     - examples
 requires:
   HTTP::Parser: 0.04
+  HTTP::Request: 0
+  HTTP::Response: 0
   HTTP::Status: 0
   POE: 1.003
   perl: 5.6.0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.02
+version: 0.04

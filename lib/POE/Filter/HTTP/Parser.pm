@@ -7,7 +7,7 @@ use HTTP::Status qw(status_message RC_BAD_REQUEST RC_OK RC_LENGTH_REQUIRED);
 use base 'POE::Filter';
 use vars qw($VERSION);
 
-$VERSION = '0.04';
+$VERSION = '0.06';
 
 my %type_map = (
    'server', 'request',
@@ -275,10 +275,10 @@ Returns an array reference if there's any data, or undef if the filter was empty
 =item C<put>
 
 Takes an arrayref of either L<HTTP::Response> objects or L<HTTP::Request> objects depending on whether
-C<type> is set to C<request> or C<response>, respectively.
+C<type> is set to C<server> or C<client>, respectively.
 
-If C<type> is C<response>, then this accepts L<HTTP::Request> objects.
-If C<type> is C<request>, then this accepts L<HTTP::Response> objects.
+If C<type> is C<client>, then this accepts L<HTTP::Request> objects.
+If C<type> is C<server>, then this accepts L<HTTP::Response> objects.
 
 This does make sense if you think about it.
 

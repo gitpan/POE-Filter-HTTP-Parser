@@ -7,7 +7,7 @@ build_requires:
   Test::POE::Client::TCP: 0.1
   Test::POE::Server::TCP: 0.16
 distribution_type: module
-generated_by: 'Module::Install version 0.77'
+generated_by: 'Module::Install version 0.78'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -15,9 +15,9 @@ meta-spec:
 name: POE-Filter-HTTP-Parser
 no_index:
   directory:
+    - examples
     - inc
     - t
-    - examples
 requires:
   HTTP::Parser: 0.04
   HTTP::Request: 0
@@ -27,4 +27,4 @@ requires:
   perl: 5.6.0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.04
+version: 0.06

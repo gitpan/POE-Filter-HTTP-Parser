@@ -1,6 +1,9 @@
 Changelog for POE::Filter::HTTP::Parser
 =======================================
 
+0.06	Tue Jan 27 10:38:34 GMT 2009
+	- POD fixes. Inconsistent referral to the 'type'
+
 0.04	Fri Jan 23 12:18:06 GMT 2009
 	- Improved the documentation
 	- Clarified type to 'server' or 'client'

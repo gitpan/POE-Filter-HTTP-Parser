@@ -7,7 +7,7 @@ use HTTP::Status qw(status_message RC_BAD_REQUEST RC_OK RC_LENGTH_REQUIRED);
 use base 'POE::Filter';
 use vars qw($VERSION);
 
-$VERSION = '0.06';
+$VERSION = '0.08';
 
 my %type_map = (
    'server', 'request',
@@ -38,6 +38,7 @@ sub get_one {
   my $events = [];
   
   my $string = shift @{ $self->{BUFFER} };
+  return [] unless $string;
 
   my $status;
   eval { $status = $self->{parser}->add( $string ); };

@@ -1,6 +1,10 @@
 Changelog for POE::Filter::HTTP::Parser
 =======================================
 
+0.08	Thu Jan 29 14:29:53 GMT 2009
+	- Small bug in 'get_one', we should check that $string
+	  actually has something in it before passing to HTTP::Parser.
+
 0.06	Tue Jan 27 10:38:34 GMT 2009
 	- POD fixes. Inconsistent referral to the 'type'
 

@@ -6,8 +6,9 @@ use HTTP::Parser;
 use HTTP::Status qw(status_message RC_BAD_REQUEST RC_OK RC_LENGTH_REQUIRED);
 use base 'POE::Filter';
 use vars qw($VERSION);
+use Encode qw[encode_utf8];
 
-$VERSION = '1.02';
+$VERSION = '1.04';
 
 my %type_map = (
    'server', 'request',
@@ -110,7 +111,7 @@ sub _put_response {
     push @headers, $status_line;
     push @headers, $_->headers_as_string("\x0D\x0A");
 
-    push @raw, join("\x0D\x0A", @headers, "") . $_->content;
+    push @raw, encode_utf8(join("\x0D\x0A", @headers, "")) . $_->content;
   }
 
   \@raw;
@@ -135,7 +136,7 @@ sub _put_request {
     push @headers, $req_line;
     push @headers, $_->headers_as_string("\x0D\x0A");
 
-    push @raw, join("\x0D\x0A", @headers, "") . $_->content;
+    push @raw, encode_utf8(join("\x0D\x0A", @headers, "")) . $_->content;
   }
 
   \@raw;

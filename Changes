@@ -1,31 +1,64 @@
-Changelog for POE::Filter::HTTP::Parser
-=======================================
+==============================
+2011-03-07 23:46:11 +0000 1.06
+==============================
 
-1.04  Wed Jul 28 12:59:47 BST 2010
-  - Apply a patch from Dariusz Jackowski [RT#59772] which fixes 
-    double encoded utf-8 strings.
+  commit b19d16ab7884681490695ac7e06145c8e609a293
+  Author: Chris 'BinGOs' Williams <chris@bingosnet.co.uk>
+  Date:   Mon Mar 7 23:46:11 2011 +0000
+  
+    Fix trailing space and bump version to 1.06
 
-1.02	Wed Jun 17 16:19:05 BST 2009
-	- Fixed small bug in get_pending()
+  commit dd95ee1ab0da0d89e8a18e39e9b4cbebabdd4f44
+  Author: Paul Driver <frodwith@gmail.com>
+  Date:   Mon Mar 7 10:54:55 2011 -0600
+  
+    Depending on latest HTTP::Parser and fixing some tests
 
-1.00	Mon May 11 22:59:58 BST 2009
-	- Added auto_license and githubmeta to Makefile.PL
-	- Bumped to a stable version
+  commit a3fbde85a4c52b1f9265b355a40214d4ba69b9d7
+  Author: Chris 'BinGOs' Williams <chris@bingosnet.co.uk>
+  Date:   Mon Mar 7 21:46:59 2011 +0000
+  
+    Update dist.ini with 'Prereqs' option rather than 'Prereq'
 
-0.08	Thu Jan 29 14:29:53 GMT 2009
-	- Small bug in 'get_one', we should check that $string
-	  actually has something in it before passing to HTTP::Parser.
+  commit 0337189987690f84435961ee29e0082a6216accf
+  Author: Chris 'BinGOs' Williams <chris@bingosnet.co.uk>
+  Date:   Wed Jul 28 13:13:58 2010 +0100
+  
+    Removed the unnecessary tests
 
-0.06	Tue Jan 27 10:38:34 GMT 2009
-	- POD fixes. Inconsistent referral to the 'type'
+  commit ae9689f9b53ecfdc6db670daba7db58b72c30126
+  Author: Chris 'BinGOs' Williams <chris@bingosnet.co.uk>
+  Date:   Wed Jul 28 13:06:43 2010 +0100
+  
+    Convert distribution to Dist::Zilla 
 
-0.04	Fri Jan 23 12:18:06 GMT 2009
-	- Improved the documentation
-	- Clarified type to 'server' or 'client'
-	- Generate a HTTP::Response error on bad request in 'server' mode.
-	  much like POE::Filter::HTTPD does.
-	- Additional tests, added Test::POE::(Client|Server)::TCP as 
-	  build_requires
+==============================
+2010-07-28 13:00:14 +0100 1.04
+==============================
 
-0.02	Thu Jan 22 16:29:49 GMT 2009
-	- Initial CPAN Release
+  commit 73125ea7b37e467d3ee3c9484aa74b6a9df8f159
+  Author: Chris 'BinGOs' Williams <chris@bingosnet.co.uk>
+  Date:   Wed Jul 28 13:00:14 2010 +0100
+  
+    Bump version and update Changes
+
+  commit 2569462538d5782d38d86cafb114247eacef2224
+  Author: Chris 'BinGOs' Williams <chris@bingosnet.co.uk>
+  Date:   Wed Jul 28 12:58:15 2010 +0100
+  
+    Apply a patch from Dariusz Jackowski [RT#59772] which fixes double
+    encoded utf-8 strings. 
+
+==============================
+2009-06-17 16:20:07 +0100 1.02
+==============================
+
+  commit 0fc4b1a7df9292444132814e3f02fafb271ec418
+  Author: Chris Williams <chris@bingosnet.co.uk>
+  Date:   Wed Jun 17 16:20:07 2009 +0100
+  
+    Fixed small bug in get_pending() 
+
+====================================
+End of changes in the last 1825 days
+====================================

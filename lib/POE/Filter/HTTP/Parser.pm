@@ -1,14 +1,16 @@
 package POE::Filter::HTTP::Parser;
+BEGIN {
+  $POE::Filter::HTTP::Parser::VERSION = '1.06';
+}
+
+# ABSTRACT: A HTTP POE filter for HTTP clients or servers
 
 use strict;
 use warnings;
 use HTTP::Parser;
 use HTTP::Status qw(status_message RC_BAD_REQUEST RC_OK RC_LENGTH_REQUIRED);
 use base 'POE::Filter';
-use vars qw($VERSION);
 use Encode qw[encode_utf8];
-
-$VERSION = '1.04';
 
 my %type_map = (
    'server', 'request',
@@ -37,7 +39,7 @@ sub get_one_start {
 sub get_one {
   my $self = shift;
   my $events = [];
-  
+
   my $string = shift @{ $self->{BUFFER} };
   return [] unless $string;
 
@@ -200,11 +202,18 @@ sub _build_error {
 }
 
 'I filter therefore I am';
+
+
 __END__
+=pod
 
 =head1 NAME
 
 POE::Filter::HTTP::Parser - A HTTP POE filter for HTTP clients or servers
+
+=head1 VERSION
+
+version 1.06
 
 =head1 SYNOPSIS
 
@@ -224,7 +233,6 @@ POE::Filter::HTTP::Parser - A HTTP POE filter for HTTP clients or servers
 
     my $arrayref_of_response_objects = $filter->get( [ $stream ] );
 
-
 =head1 DESCRIPTION
 
 POE::Filter::HTTP::Parser is a L<POE::Filter> for HTTP which is based on L<HTTP::Parser>.
@@ -238,7 +246,7 @@ objects and convert them to HTTP streams.
 With the C<type> set to C<server>, the reverse will happen. C<get> will parse L<HTTP::Request>
 objects from HTTP streams and C<put> will accept L<HTTP::Response> objects and convert them to
 HTTP streams. Like L<POE::Filter::HTTPD> if there is an error parsing the HTTP request, this
-filter will generate a L<HTTP::Response> object instead, to encapsulate the error message, 
+filter will generate a L<HTTP::Response> object instead, to encapsulate the error message,
 suitable for simply sending back to the requesting client.
 
 =head1 CONSTRUCTOR
@@ -265,7 +273,7 @@ if C<type> is not specified.
 
 =item C<get_one>
 
-Takes an arrayref which contains lines of text. Returns an arrayref of either 
+Takes an arrayref which contains lines of text. Returns an arrayref of either
 L<HTTP::Request> or L<HTTP::Response> objects depending on the C<type> that has been
 specified.
 
@@ -292,19 +300,11 @@ Makes a copy of the filter, and clears the copy's buffer.
 
 =back
 
-=head1 AUTHOR
-
-Chris C<BinGOs> Williams
+=head1 CREDITS
 
 The C<put> method for HTTP responses was borrowed from L<POE::Filter::HTTPD>,
 along with the code to generate L<HTTP::Response> on a parse error,
 by Artur Bergman and Rocco Caputo.
-
-=head1 LICENSE
-
-Copyright E<copy> Chris Williams, Artur Bergman and Rocco Caputo.
-
-This module may be used, modified, and distributed under the same terms as Perl itself. Please see the license that came with your Perl distribution for details.
 
 =head1 SEE ALSO
 
@@ -314,4 +314,16 @@ L<HTTP::Parser>
 
 L<POE::Filter::HTTPD>
 
+=head1 AUTHOR
+
+Chris Williams <chris@bingosnet.co.uk>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Chris Williams, Artur Bergman and Rocco Caputo.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

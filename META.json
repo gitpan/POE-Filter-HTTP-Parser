@@ -1,0 +1,53 @@
+{
+   "abstract" : "A HTTP POE filter for HTTP clients or servers",
+   "author" : [
+      "Chris Williams <chris@bingosnet.co.uk>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.110580",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "POE-Filter-HTTP-Parser",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.42",
+            "Test::More" : "0.47",
+            "Test::POE::Client::TCP" : "0.1",
+            "Test::POE::Server::TCP" : "0.16"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.31"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Encode" : 0,
+            "HTTP::Parser" : "0.06",
+            "HTTP::Request" : 0,
+            "HTTP::Response" : 0,
+            "HTTP::Status" : 0,
+            "POE" : "1.003",
+            "perl" : "v5.6.0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "homepage" : "http://github.com/bingos/poe-filter-http-parser/tree",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/bingos/poe-filter-http-parser.git",
+         "web" : "http://github.com/bingos/poe-filter-http-parser/tree"
+      }
+   },
+   "version" : "1.06"
+}
+
